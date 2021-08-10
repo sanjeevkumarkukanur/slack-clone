@@ -1,10 +1,16 @@
 import { Add, Apps, BookmarkBorder, Create, Drafts, ExpandLess, ExpandMore, FiberManualRecord, FileCopy, Inbox, InsertComment, PeopleAlt } 
 from '@material-ui/icons'
 import React from 'react'
+import { useCollection } from 'react-firebase-hooks/firestore';
 import styled from 'styled-components';
+import { db } from '../firebase';
 import SidebarOpt from './SidebarOption';
 
 function Sidebar() {
+
+    const [channels, loading, error] = useCollection(db.collection("rooms"));
+    
+
     return (
         <SidebarContainer>
             <SidebarHeader>
@@ -29,10 +35,10 @@ function Sidebar() {
             <SidebarOpt Icon={ExpandMore} title="Channels" />
             <hr />
             <SidebarOpt Icon={Add} addChannelOption title="Add Channel" />
-            {channels?.docs.map(doc =>{
-                <SidebarOpt addChannelOption title={doc.data().name} />
+            {channels?.docs.map((doc) =>(
+            <SidebarOpt key={doc.id} id={doc.id} title={doc.data().name} />
 
-            })}
+            ))}
 
         </SidebarContainer>
     )

@@ -11,7 +11,6 @@ export const appSlice = createSlice({
     enterRoom: (state, action) => {
       state.roomId = action.payload.roomId;
     },
-    
   },
     
 });

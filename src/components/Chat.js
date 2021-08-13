@@ -5,33 +5,62 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { selectRoomId } from '../features/appSlice';
 import ChatInput from './ChatInput';
+import { useCollection, useDocument } from 'react-firebase-hooks/firestore'
+import { db } from '../firebase';
+import Message from './Message';
 
     
     function Chat() {
 
         const roomId = useSelector(selectRoomId)
+        const [roomDetails] = useDocument(
+            roomId && db.collection('rooms').doc(roomId)
+        )
+
+        const [roomMessage] = useCollection(
+            roomId && 
+            db.collection("rooms").doc(roomId).collection("meassages").orderBy("timestamp", "asc")
+        )
+        
+
         return (
             <ChatContainer>
-
+                <>
                 <Header >
                     <HeaderLift>
-                        <h4><strong>#Room-name</strong></h4>
+                        <h4><strong>{roomDetails?.data().name}</strong></h4>
                         <StarBorderOutlined />
                     </HeaderLift>
 
                     <HeaderRight>
                         <p>
                             <InfoOutlined /> Details
+
                         </p>
                     </HeaderRight>
                 </Header>
+
                 <ChatMessages>
-                    {/* List out the messages */}
+                    {roomMessage?.docs.map(doc =>{
+                        const { message, timestamp, user, userImage } = doc.data();
+
+                        return(
+                            <Message 
+                            key = {doc.key}
+                            message = {message}
+                            timestamp= {timestamp}
+                            user= {user}
+                            userImage= {userImage}
+                            />
+                        )
+                    })}
                 </ChatMessages>
                 <ChatInput 
-                //class Id
+                channelName={roomDetails?.data().name}
                 channelId = {roomId}
                 />
+                </>
+                
             </ChatContainer>
         )
     }

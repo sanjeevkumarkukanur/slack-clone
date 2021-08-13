@@ -21,9 +21,13 @@ function SidebarOpt({Icon, title, addChannelOption, id }) {
     }
 
     const selectChannel = () =>{
-        dispatch(enterRoom({
-            roomId: id,
-        }))
+        if(id){
+            dispatch(enterRoom({
+                roomId: id,  
+            }))
+            
+        }
+
     }
 
     return (

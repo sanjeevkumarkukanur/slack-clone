@@ -16,11 +16,12 @@ import Message from './Message';
         const [roomDetails] = useDocument(
             roomId && db.collection('rooms').doc(roomId)
         )
-
-        const [roomMessage] = useCollection(
+        console.log(roomId)
+        const [roomMessages] = useCollection(
             roomId && 
-            db.collection("rooms").doc(roomId).collection("meassages").orderBy("timestamp", "asc")
+            db.collection("rooms").doc(roomId).collection("messages").orderBy("timestamp", "asc")
         )
+        console.log(roomMessages)
         
 
         return (
@@ -41,7 +42,7 @@ import Message from './Message';
                 </Header>
 
                 <ChatMessages>
-                    {roomMessage?.docs.map(doc =>{
+                    {roomMessages?.docs.map((doc) =>{
                         const { message, timestamp, user, userImage } = doc.data();
 
                         return(
@@ -52,8 +53,8 @@ import Message from './Message';
                             user= {user}
                             userImage= {userImage}
                             />
-                        )
-                    })}
+                        );
+                    })};
                 </ChatMessages>
                 <ChatInput 
                 channelName={roomDetails?.data().name}

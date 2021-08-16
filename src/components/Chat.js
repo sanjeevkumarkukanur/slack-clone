@@ -1,6 +1,6 @@
 
 import { InfoOutlined, StarBorderOutlined } from '@material-ui/icons';
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { selectRoomId } from '../features/appSlice';
@@ -12,61 +12,72 @@ import Message from './Message';
     
     function Chat() {
 
+        const chatRef = useRef(null)
         const roomId = useSelector(selectRoomId)
         const [roomDetails] = useDocument(
             roomId && db.collection('rooms').doc(roomId)
         )
-        console.log(roomId)
-        const [roomMessages] = useCollection(
+        const [roomMessages, loading] = useCollection(
             roomId && 
-            db.collection("rooms").doc(roomId).collection("messages").orderBy("timestamp", "asc")
-        )
-        console.log(roomMessages)
+            db
+            .collection("rooms")
+            .doc(roomId)
+            .collection("messages")
+            .orderBy("timestamp", "asc")
+        );
+        useEffect(() => {
+            chatRef?.current?.scrollIntoView()
+        }, [roomId, loading])
         
 
         return (
             <ChatContainer>
-                <>
-                <Header >
-                    <HeaderLift>
-                        <h4><strong>{roomDetails?.data().name}</strong></h4>
-                        <StarBorderOutlined />
-                    </HeaderLift>
-
-                    <HeaderRight>
-                        <p>
-                            <InfoOutlined /> Details
-
-                        </p>
-                    </HeaderRight>
-                </Header>
-
-                <ChatMessages>
-                    {roomMessages?.docs.map((doc) =>{
-                        const { message, timestamp, user, userImage } = doc.data();
-
-                        return(
-                            <Message 
-                            key = {doc.key}
-                            message = {message}
-                            timestamp= {timestamp}
-                            user= {user}
-                            userImage= {userImage}
-                            />
-                        );
-                    })};
-                </ChatMessages>
-                <ChatInput 
-                channelName={roomDetails?.data().name}
-                channelId = {roomId}
-                />
-                </>
+                {roomMessages && roomDetails && (
+                    <>
+                    <Header >
+                        <HeaderLift>
+                            <h4><strong>{roomDetails?.data().name}</strong></h4>
+                            <StarBorderOutlined />
+                        </HeaderLift>
+    
+                        <HeaderRight>
+                            <p>
+                                <InfoOutlined /> Details
+    
+                            </p>
+                        </HeaderRight>
+                    </Header>
+    
+                    <ChatMessages>
+                        {roomMessages?.docs.map((doc) =>{
+                            const { message, timestamp, user, userImage } = doc.data()
+    
+                            return(
+                                <Message 
+                                key = {doc.key}
+                                message = {message}
+                                timestamp= {timestamp}
+                                user= {user}
+                                userImage= {userImage}
+                                />
+                            )
+                        })};
+                         <ChatBattom ref={chatRef} />
+                    </ChatMessages>
+                    <ChatInput 
+                    chatRef={chatRef}
+                    channelName={roomDetails?.data().name}
+                    channelId = {roomId}
+                    />
+                    </>
+                )}
+                
                 
             </ChatContainer>
         )
     }
     
-    export default Chat;
+    export default Chat
 
     const Header = styled.div`
     display: flex;
@@ -100,13 +111,16 @@ import Message from './Message';
         font-size: 18px;
     }
     `;
+
+    const ChatBattom =styled.div`
+    border-bottom: 20px;
+    `;
     const ChatMessages = styled.div` 
-     
     `;
 
     const ChatContainer = styled.div`
         flex: 0.7;
         flex-grow: 1;
         overflow-y: scroll;
-        margin-top: 60px;
+        margin-top: 120px;
     `;

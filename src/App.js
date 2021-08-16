@@ -33,4 +33,5 @@ export default App;
 
 const AppBody = styled.div`
   display: flex;
+  height: 100vh;
 `;

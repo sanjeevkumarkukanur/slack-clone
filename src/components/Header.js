@@ -2,13 +2,24 @@ import React from 'react'
 import styled from "styled-components"
 import { Avatar } from "@material-ui/core"
 import { AccessTime, HelpOutline, Search } from '@material-ui/icons'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../firebase'
 
 function Header() {
+
+    const [user] = useAuthState(auth);
+    
+
+
     return (
         <HeaderContainer>
             {/* header left */}
                 <HeaderLeft>
-                    <HeaderAvatar />  
+                    <HeaderAvatar 
+                    onClick={ ()=> auth.signOut()}
+                    alt={user?.displayName}
+                    src={user?.photoURL}
+                    />  
                     <AccessTime />
                 </HeaderLeft>
             {/* header seacrh */}
@@ -39,17 +50,18 @@ const HeaderRight = styled.div`
 
 const HeadrerSearch = styled.div`
     display: flex;
-    align-items: center;
     flex: 0.4;
-    border-radius: 10px;
+    border-radius: 6px;
     background-color: #421f44;
     opacity: 1;
-    padding: 0 10px;
+    padding: 0 50px;
+    color: gray;
     border: 1px solid whitesmoke;
 
     > input {
         background-color: transparent;
         min-width: 30vw;
+        text-align: center;
         outline: none;
         border: none;
         color: white;

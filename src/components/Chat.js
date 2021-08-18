@@ -27,12 +27,12 @@ import Message from './Message';
         );
         useEffect(() => {
             chatRef?.current?.scrollIntoView()
-        }, [roomId, loading])
+        }, [roomId, loading]);
         
 
         return (
             <ChatContainer>
-                {roomMessages && roomDetails && (
+                {roomDetails && roomMessages && (
                     <>
                     <Header >
                         <HeaderLift>
@@ -50,11 +50,11 @@ import Message from './Message';
     
                     <ChatMessages>
                         {roomMessages?.docs.map((doc) =>{
-                            const { message, timestamp, user, userImage } = doc.data()
+                            const { message, timestamp, user, userImage } = doc.data();
     
                             return(
                                 <Message 
-                                key = {doc.key}
+                                key = {doc.id}
                                 message = {message}
                                 timestamp= {timestamp}
                                 user= {user}
@@ -70,9 +70,7 @@ import Message from './Message';
                     channelId = {roomId}
                     />
                     </>
-                )}
-                
-                
+                )} 
             </ChatContainer>
         )
     }
@@ -96,7 +94,7 @@ import Message from './Message';
     }
     > h4 > .MuiSvgIcon-root{
         margin-left: 10px;
-        font-size: 14px;
+        font-size: 18px;
     }
     `;
 
@@ -104,16 +102,16 @@ import Message from './Message';
     >p {
         display: flex;
         align-items: center;
-        font-size: 18px;
+        font-size: 14px;
     }
     > p > .MuiSvgIcon-root{
-        margin-right: 10px !important;
-        font-size: 18px;
+        margin-right: 5px !important;
+        font-size: 16px;
     }
     `;
 
     const ChatBattom =styled.div`
-    border-bottom: 20px;
+    padding-bottom: 200px;
     `;
     const ChatMessages = styled.div` 
     `;
@@ -122,5 +120,5 @@ import Message from './Message';
         flex: 0.7;
         flex-grow: 1;
         overflow-y: scroll;
-        margin-top: 120px;
+        margin-top: 60px;
     `;

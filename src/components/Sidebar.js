@@ -1,21 +1,23 @@
 import { Add, Apps, BookmarkBorder, Create, Drafts, ExpandLess, ExpandMore, FiberManualRecord, FileCopy, Inbox, InsertComment, PeopleAlt } 
 from '@material-ui/icons'
 import React from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import styled from 'styled-components';
-import { db } from '../firebase';
+import { auth, db } from '../firebase';
 import SidebarOpt from './SidebarOption';
 
 function Sidebar() {
 
-    const [channels, loading, error] = useCollection(db.collection("rooms"));
+    const [channels] = useCollection(db.collection("rooms"));
+    const [user] = useAuthState(auth)
     
 
     return (
         <SidebarContainer>
             <SidebarHeader>
                 <SidebarInfo>
-                    <h2>Sanjeev Fam</h2>
+                    <h2>{user.displayName}</h2>
                     <h3>
                         <FiberManualRecord />
                         Sanjeev Kukanur
@@ -53,7 +55,7 @@ const SidebarContainer = styled.div`
     border-top: 1px solid #49274b;
     max-width: 260px;
     margin-top: 60px;
-    height: 100vh;
+    
     > hr {
         margin-top: 10px;
         margin-bottom: 10px;
